@@ -1,0 +1,16 @@
+C:\Users\ameis\dev\southfury-csharp-dojo\bin\Debug\net5.0\southfury-csharp-dojo.exe
+C:\Users\ameis\dev\southfury-csharp-dojo\bin\Debug\net5.0\southfury-csharp-dojo.deps.json
+C:\Users\ameis\dev\southfury-csharp-dojo\bin\Debug\net5.0\southfury-csharp-dojo.runtimeconfig.json
+C:\Users\ameis\dev\southfury-csharp-dojo\bin\Debug\net5.0\southfury-csharp-dojo.runtimeconfig.dev.json
+C:\Users\ameis\dev\southfury-csharp-dojo\bin\Debug\net5.0\southfury-csharp-dojo.dll
+C:\Users\ameis\dev\southfury-csharp-dojo\bin\Debug\net5.0\ref\southfury-csharp-dojo.dll
+C:\Users\ameis\dev\southfury-csharp-dojo\bin\Debug\net5.0\southfury-csharp-dojo.pdb
+C:\Users\ameis\dev\southfury-csharp-dojo\obj\Debug\net5.0\southfury-csharp-dojo.csproj.AssemblyReference.cache
+C:\Users\ameis\dev\southfury-csharp-dojo\obj\Debug\net5.0\southfury-csharp-dojo.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\ameis\dev\southfury-csharp-dojo\obj\Debug\net5.0\southfury-csharp-dojo.AssemblyInfoInputs.cache
+C:\Users\ameis\dev\southfury-csharp-dojo\obj\Debug\net5.0\southfury-csharp-dojo.AssemblyInfo.cs
+C:\Users\ameis\dev\southfury-csharp-dojo\obj\Debug\net5.0\southfury-csharp-dojo.csproj.CoreCompileInputs.cache
+C:\Users\ameis\dev\southfury-csharp-dojo\obj\Debug\net5.0\southfury-csharp-dojo.dll
+C:\Users\ameis\dev\southfury-csharp-dojo\obj\Debug\net5.0\ref\southfury-csharp-dojo.dll
+C:\Users\ameis\dev\southfury-csharp-dojo\obj\Debug\net5.0\southfury-csharp-dojo.pdb
+C:\Users\ameis\dev\southfury-csharp-dojo\obj\Debug\net5.0\southfury-csharp-dojo.genruntimeconfig.cache
