@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 // SOUTHFURY CODING DOJO - 10/14/2021
 // --- EXERCISE 1: Classes, properties and methods ---
