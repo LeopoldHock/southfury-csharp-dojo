@@ -1,0 +1,150 @@
+using System;
+using System.Collections.Generic;
+// SOUTHFURY CODING DOJO - 10/14/2021
+// --- EXERCISE 2: Identifying Objects and using Lists
+// The following exercise is all about penguins! Everybody knows that 
+
+namespace southfury_csharp_dojo
+{
+    class southfury_csharp_dojo
+    {
+        static void Main()
+        {
+            int numberOfCouples = 20;
+            Random rng = new Random();
+            List<Penguin> penguins = new List<Penguin>();
+            for (int i = 0; i < numberOfCouples; i++)
+            {
+                Penguin partner1 = new Penguin();
+                Penguin partner2 = new Penguin();
+                partner1.SetPartnerId(partner2);
+                partner1.hasBeenFishing = true;
+                int numberOfFish = rng.Next(1, 6);
+                for (int ii = 0; ii < numberOfFish; ii++)
+                {
+                    partner1.fish.Add(new Fish());
+                }
+                penguins.Add(partner1);
+                penguins.Add(partner2);
+            }
+            Helper.Shuffle(penguins);
+            Console.WriteLine("A whole bunch of penguins climbs onto the shore and starts looking for their partners. UwU");
+            // Task 1: The penguins that have been fishing are trying to find their partners. Make every penguin
+            // find (and remember) its partner - but beware, the list have been shuffled randomly!
+            // Note: A penguin remember its partner after its 'partner' property has been assigned the partner penguin.
+            foreach (Penguin penguin in penguins)
+            {
+                if (penguin.hasBeenFishing == false)
+                {
+                    continue;
+                }
+                Console.WriteLine("A penguin that went fishing is looking for its partner...");
+                // -- Enter your code below this line --
+                foreach (Penguin potentialPartner in penguins)
+                {
+                    if (penguin.partnerId == potentialPartner.id)
+                    {
+                        penguin.partner = potentialPartner;
+                        break;
+                    }
+                }
+                // -- Enter your code above this line --
+                if (penguin.partner != null && penguin.partner.id == penguin.partnerId)
+                {
+                    Console.WriteLine("The penguin found its partner! Yay!");
+                }
+                else
+                {
+                    Console.WriteLine("A penguin did not find its partner. How sad. :(");
+                    return;
+                }
+            }
+            // Task 2: Now, make the fisher penguins give their fish to their hungry partners. :3
+            foreach (Penguin penguin in penguins)
+            {
+                if (penguin.hasBeenFishing == false)
+                {
+                    continue;
+                }
+                // -- Enter your code below this line --
+                for (int i = 0; i < penguin.fish.Count; i++)
+                {
+                    Fish currentFish = penguin.fish[i];
+                    penguin.partner.fish.Add(currentFish);
+                    penguin.fish.RemoveAt(i);
+                    i--;
+                }
+                // alternative (a little more elegant):
+                /*
+                while (penguin.fish.Count > 0)
+                {
+                    Fish currentFish = penguin.fish[0];
+                    penguin.partner.fish.Add(currentFish);
+                    penguin.fish.RemoveAt(0);
+                }
+                */
+                // -- Enter your code above this line --
+                if (penguin.partner.fish.Count > 0)
+                {
+                    if (penguin.fish.Count > 0)
+                    {
+                        Console.WriteLine("Hey! You cheated! You cannot duplicate fish.");
+                        return;
+                    }
+                    else
+                    {
+                        Console.WriteLine("A penguin gave " + penguin.partner.fish.Count + " to its partner. How cute!");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("A partner did not get any fish. It is still hungry. :(");
+                    return;
+                }
+            }
+            Console.WriteLine("Good job! You've completed the this exercise. :)");
+        }
+    }
+
+    class Penguin
+    {
+        public Guid id;
+        public Guid partnerId;
+        public Penguin partner;
+        public bool hasBeenFishing = false;
+        public List<Fish> fish = new List<Fish>();
+
+        public Penguin()
+        {
+            this.id = Guid.NewGuid();
+        }
+
+        public void SetPartnerId(Penguin partner)
+        {
+            this.partnerId = partner.id;
+            partner.partnerId = this.id;
+        }
+    }
+
+    public class Fish
+    {
+
+    }
+
+    static class Helper
+    {
+        public static void Shuffle<T>(this IList<T> list)
+        {
+            Random rng = new Random();
+            int n = list.Count;
+            while (n > 1)
+            {
+                n--;
+                int k = rng.Next(n + 1);
+                T value = list[k];
+                list[k] = list[n];
+                list[n] = value;
+            }
+        }
+    }
+}

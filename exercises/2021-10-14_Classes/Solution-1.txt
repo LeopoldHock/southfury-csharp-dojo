@@ -1,0 +1,165 @@
+using System;
+using System.Collections.Generic;
+// SOUTHFURY CODING DOJO - 10/14/2021
+// --- EXERCISE 1: Classes, properties and methods ---
+// Below code has two classes: A Person and a Chair. Persons can sit on Chairs, but
+// every Person can only sit on one chair at a time and every Chair can only hold one Person.
+// Complete the below code to have one Person sit on a Chair. Mak
+
+namespace southfury_csharp_dojo
+{
+    class southfury_csharp_dojo
+    {
+        static void Main()
+        {
+            // Imagine a room. The room has two chairs with different colors.
+            List<Chair> chairs = new List<Chair>();
+            chairs.Add(new Chair("green"));
+            chairs.Add(new Chair("purple"));
+
+            // Now a two persons enter the room. They both want to sit!
+            List<Person> people = new List<Person>();
+            people.Add(new Person("Tanner"));
+            people.Add(new Person("Andra"));
+
+            // Part 1: Make both Tanner and Andra find a place to sit. You'll need a loop! Remember, loops can look like this:
+            // foreach (Person person in people) {
+            //      ... do something with person in here
+            // }
+            // Loops can also be stacked. Everybody likes loops, so put a loop in your loop!
+            // And finally, look closely at the TrySitOnChair() method of the Person class. It returns something really helpful!
+            // -- Enter your code below this line --
+            foreach (Person person in people)
+            {
+                foreach (Chair chair in chairs)
+                {
+                    if (person.TrySitOnchair(chair))
+                    {
+                        break;
+                    }
+                }
+            }
+
+            // Part 2: Make a new person named 'Leo'. Leo wants to sit as well. But both chairs are occupied.
+            // Make either Tanner or Andra get up for Leo so Leo can sit.
+            // However, there is aproblem with the LeaveCurrentChair() method of the Person class. Oh no, tt throws an exception!
+            // Try debugging it and find out what's wrong with it.
+            // -- Enter your code below this line --
+            Person leo = new Person("Leo");
+            people.Add(leo);
+            Chair targetChair = people[0].currentChair;
+            people[0].LeaveCurrentChair();
+            leo.TrySitOnchair(targetChair);
+
+            // Part 3: The person that left their chair gets tired of sitting. Complete the SummonChair() method of
+            // the Person class and use it. When done, remove the '//'
+            // -- Enter your code below this line --
+            foreach (Person person in people)
+            {
+                if (person.currentChair == null)
+                {
+                    person.TrySitOnchair(person.SummonChair("blue"));
+                }
+            }
+
+
+            // Finishing checks: When you're done with all tasks, remove the '/*' and '*/' of below lines. If the
+            // check doesn't fail, you've successfully completed the exercise!
+            Console.WriteLine("Let's see now...");
+            bool checkFailed = false;
+            foreach (Person person in people)
+            {
+                if (person.currentChair == null)
+                {
+                    Console.WriteLine(person.name + " has to stand and that makes them sad.");
+                    checkFailed = true;
+                    break;
+                }
+                else
+                {
+                    Console.WriteLine(person.name + " sits on the " + person.currentChair.color + " chair.");
+                    if (person.currentChair.occupant.name == person.name)
+                    {
+                        Console.WriteLine("The chair agrees.");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Whoops! The chair doesn't agree - it has no occupant.");
+                    }
+                }
+            }
+            if (checkFailed)
+            {
+                Console.WriteLine("Oh no! Something's wrong. Try again!");
+            }
+            else
+            {
+                Console.WriteLine("You did it! Congratulations.");
+            }
+
+        }
+    }
+
+    class Person
+    {
+        public Chair currentChair;
+        public string name;
+
+        public Person(string name)
+        {
+            this.name = name;
+            Console.WriteLine(name + " enters the room and looks for a place to sit.");
+        }
+
+        public Boolean TrySitOnchair(Chair chair)
+        {
+            if (chair.occupant == null && this.currentChair == null)
+            {
+                this.currentChair = chair;
+                chair.occupant = this;
+                Console.WriteLine(this.name + " sits on the " + chair.color + " chair.");
+                return true;
+            }
+            else if (chair.occupant != null)
+            {
+                Console.WriteLine(this.name + " cannot sit on the " + chair.color + " chair. " + chair.occupant.name + " already sits there!");
+            }
+            else if (this.currentChair != null)
+            {
+                Console.WriteLine(this.name + " already sits quite comfortably.");
+            }
+            return false;
+        }
+
+        public void LeaveCurrentChair()
+        {
+            if (this.currentChair != null)
+            {
+                Console.WriteLine(this.name + " leaves the " + this.currentChair.color + " chair.");
+                // These 2 lines of code are not working as they should. What could be wrong with them?
+                this.currentChair.occupant = null;
+                this.currentChair = null;
+            }
+        }
+
+        public Chair SummonChair(string color)
+        {
+            // This method is not finished. Complete it and use it in your program! 
+            Chair newChair = new Chair(color);
+            Console.WriteLine(this.name + " speaks a few magic words and makes a " + newChair.color + " chair appear. Incredible!");
+            return newChair;
+        }
+
+    }
+
+    class Chair
+    {
+        public string color;
+        public Person occupant;
+
+        public Chair(string color)
+        {
+            this.color = color;
+        }
+    }
+}

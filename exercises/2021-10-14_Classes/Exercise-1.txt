@@ -33,7 +33,7 @@ namespace southfury_csharp_dojo
 
 
             // Part 2: Make a new person named 'Leo'. Leo wants to sit as well. But both chairs are occupied.
-            // Make either Tanner or Andra get up for Leo so Leo can sit.
+            // Make the FIRST person get up for Leo so Leo can sit.
             // However, there is aproblem with the LeaveCurrentChair() method of the Person class. Oh no, tt throws an exception!
             // Try debugging it and find out what's wrong with it.
             // -- Enter your code below this line --
@@ -48,7 +48,8 @@ namespace southfury_csharp_dojo
 
             // Finishing checks: When you're done with all tasks, remove the '/*' and '*/' of below lines. If the
             // check doesn't fail, you've successfully completed the exercise!
-            /*          
+            /*
+            Console.WriteLine("Let's see now...");
             bool checkFailed = false;
             foreach (Person person in people)
             {
@@ -60,8 +61,8 @@ namespace southfury_csharp_dojo
                 }
                 else
                 {
-                    Console.WriteLine(person.name + " sits on the " + person.currentChair.color);
-                    if (person.currentChair.occupant == person)
+                    Console.WriteLine(person.name + " sits on the " + person.currentChair.color " chair.");
+                    if (person.currentChair.occupant.name == person.name)
                     {
                         Console.WriteLine("The chair agrees.");
                     }
@@ -99,6 +100,7 @@ namespace southfury_csharp_dojo
             if (chair.occupant == null && this.currentChair == null)
             {
                 this.currentChair = chair;
+                chair.occupant = this;
                 Console.WriteLine(this.name + " sits on the " + chair.color + " chair.");
                 return true;
             }
@@ -119,16 +121,17 @@ namespace southfury_csharp_dojo
             {
                 Console.WriteLine(this.name + " leaves the " + this.currentChair.color + " chair.");
                 // These 2 lines of code are not working as they should. What could be wrong with them?
-                this.currentChair.occupant = null;
                 this.currentChair = null;
+                this.currentChair.occupant = null;
             }
         }
 
-        public void GetANewChair(string color)
+        public Chair SummonChair(string color)
         {
             // This method is not finished. Complete it and use it in your program! 
             Chair newChair = new Chair(color);
-            Console.WriteLine(this.name + " speaks a few magic words and makes a " + newChair.color + " appear. Incredible!");
+            Console.WriteLine(this.name + " speaks a few magic words and makes a " + newChair.color + " chair appear. Incredible!");
+            return newChair;
         }
 
     }
