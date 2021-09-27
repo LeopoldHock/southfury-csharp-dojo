@@ -1,0 +1,31 @@
+using System;
+using System.Collections.Generic;
+// SOUTHFURY CODING DOJO - 10/28/2021
+// --- EXERCISE 1: Randomization ---
+// Randomization is an important part of video game design. With the Random class, C#
+// offers a quick way to achieve some randomized results.
+
+namespace southfury_csharp_dojo
+{
+    class Program
+    {
+        static void Main()
+        {
+            int result = 0;
+            Console.WriteLine("You roll a dice.");
+            // Make result a random value from 1 to 6 (like a six-sided dice).
+            // --- Enter your code below this line ---
+            Random r = new Random();
+            result = r.Next(7);
+            // --- Enter your code above this line ---
+            if (result >= 1 && result <= 6)
+            {
+                Console.WriteLine("You rolled a " + result + "!");
+            }
+            else
+            {
+                Console.WriteLine("You rolled a " + result + "?! What kind of dice is that?");
+            }
+        }
+    }
+}

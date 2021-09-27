@@ -4,7 +4,6 @@ using System.Collections.Generic;
 // --- EXERCISE 1: Classes, properties and methods ---
 // Below code has two classes: A Person and a Chair. Persons can sit on Chairs, but
 // every Person can only sit on one chair at a time and every Chair can only hold one Person.
-// Complete the below code to have one Person sit on a Chair. Mak
 
 namespace southfury_csharp_dojo
 {
@@ -34,7 +33,7 @@ namespace southfury_csharp_dojo
 
             // Part 2: Make a new person named 'Leo'. Leo wants to sit as well. But both chairs are occupied.
             // Make the FIRST person get up for Leo so Leo can sit.
-            // However, there is aproblem with the LeaveCurrentChair() method of the Person class. Oh no, tt throws an exception!
+            // However, there is a problem with the LeaveCurrentChair() method of the Person class. Oh no, it throws an exception!
             // Try debugging it and find out what's wrong with it.
             // -- Enter your code below this line --
 

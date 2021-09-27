@@ -1,0 +1,55 @@
+using System;
+using System.Collections.Generic;
+// SOUTHFURY CODING DOJO - 10/28/2021
+// --- EXERCISE 1: Enums ---
+// Enums are very handy ways of declaring simple custom types. Enums are a special kind
+// of class that represents a group of constants. In the Unity Editor, Enums are particularly
+// useful because they are represented as Dropdowns in the UI, which makes choosing between
+// different values very convenient. Enums should always be used when a variable can have
+// multiple (but finite) states!
+
+namespace southfury_csharp_dojo
+{
+    class Program
+    {
+        static void Main()
+        {
+            Person person1 = new Person("Peter");
+            Person person2 = new Person("Jack");
+            Console.WriteLine(person1.name + " sees his rival " + person2.name + " in the distance.");
+            Console.WriteLine("He reaches into his bag of grocery and pulls out...");
+            // Part 1: Make person1 pull out a random piece of Throwable and throw it at person2!
+            // --- Enter your code below this line ---
+
+            // --- Enter your code above this line ---
+        }
+    }
+
+    enum Throwable
+    {
+        Tomato,
+        Potato,
+        Egg
+    }
+
+    class Person
+    {
+        public string name;
+        public Person(string name)
+        {
+            this.name = name;
+        }
+
+        public void Throw(Throwable throwable, Person target)
+        {
+            if (throwable == Throwable.Egg)
+            {
+                Console.WriteLine(this.name + " hits " + target.name + " with an " + throwable + ".");
+            }
+            else
+            {
+                Console.WriteLine(this.name + " hits " + target.name + " with a " + throwable + ".");
+            }
+        }
+    }
+}
