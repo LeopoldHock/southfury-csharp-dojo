@@ -8,7 +8,258 @@ namespace southfury_csharp_dojo
     {
         static void Main()
         {
+            Console.WriteLine("Game starting.");
+            Player player = new Player(askForName: false);
+            Console.WriteLine("Welcome, " + player.name + "! Your adventure begins on the shores of Westfall...");
+            Combat combat = new Combat(player);
+        }
+    }
 
+    class Player
+    {
+        public string name;
+        public int hpTotal = 50;
+        public int hpCurrent;
+
+        public Player(bool askForName = true)
+        {
+            if (askForName)
+            {
+                Console.WriteLine("Name your character..");
+                this.name = Console.ReadLine();
+            }
+            else
+            {
+                this.name = "Nameless Hero";
+            }
+            this.hpCurrent = this.hpTotal;
+        }
+
+        public void PerformAttack(Enemy target)
+        {
+            Random random = new Random();
+            int damage = random.Next(7, 100);
+            target.hpCurrent = target.hpCurrent - damage;
+            Console.WriteLine("You hit " + target.type + " for " + damage + " damage!");
+            target.UpdateState();
+        }
+
+        public void CastSpell(Enemy target)
+        {
+            Random random = new Random();
+            int damage = random.Next(1, 3);
+            target.hpCurrent = target.hpCurrent - damage;
+            Console.WriteLine("You cast a very tiny fireball and hit " + target.type + " for " + damage + " damage!");
+            target.UpdateState();
+        }
+    }
+
+    class Enemy
+    {
+        public Guid id;
+        public EnemyType type;
+        public int hpTotal = 25;
+        public int hpCurrent;
+        public bool dead = false;
+
+        public Enemy()
+        {
+            this.id = Guid.NewGuid();
+            this.hpCurrent = this.hpTotal;
+            Random r = new Random();
+            int randomNumber = r.Next(3);
+            this.type = (EnemyType)r.Next(0, Enum.GetNames(typeof(EnemyType)).Length);
+        }
+
+        public void UpdateState()
+        {
+            if (this.hpCurrent <= 0)
+            {
+                this.dead = true;
+            }
+        }
+    }
+
+    enum EnemyType
+    {
+        Murloc,
+        Bandit,
+        Gnoll
+    }
+
+    enum PlayerAction
+    {
+        Attack,
+        Spell,
+        Flee
+    }
+
+    class Combat
+    {
+        public Player player;
+        public List<Enemy> enemies = new List<Enemy>();
+        public int turnCounter = 1;
+
+        public Combat(Player player)
+        {
+            this.player = player;
+            Random random = new Random();
+            int numberOfEnemies = random.Next(2, 5);
+            for (int i = 0; i < numberOfEnemies; i++)
+            {
+                Enemy enemy = new Enemy();
+                this.enemies.Add(enemy);
+            }
+            Console.WriteLine("Watch yourself! " + this.enemies.Count + " enemies appear!");
+            this.StartTurn();
+        }
+
+        public void StartTurn()
+        {
+            Console.WriteLine("Turn " + this.turnCounter + " starts.");
+            foreach (Enemy enemy in this.enemies)
+            {
+                if (enemy.dead)
+                {
+                    Console.WriteLine(enemy.type + " (DEAD)");
+                }
+                else
+                {
+                    Console.WriteLine(enemy.type + " (HP: " + enemy.hpCurrent + ")");
+                }
+            }
+            Console.WriteLine("");
+            this.AskForPlayerInput();
+        }
+
+        public void AskForPlayerInput()
+        {
+            string actionString = "";
+            for (int i = 0; i < Enum.GetNames(typeof(PlayerAction)).Length; i++)
+            {
+                actionString += Enum.GetNames(typeof(PlayerAction))[i] + " (" + i + ")";
+                if (i < Enum.GetNames(typeof(PlayerAction)).Length - 1)
+                {
+                    actionString += ", ";
+                }
+            }
+            Console.WriteLine("Available actions: " + actionString);
+            Console.WriteLine("What do you want to do?");
+            this.ReadPlayerInput();
+        }
+
+        public void ReadPlayerInput()
+        {
+            String input = Console.ReadLine();
+            // check whether the player entered a number
+            int number;
+            if (int.TryParse(input, out number))
+            {
+                if (Enum.IsDefined(typeof(PlayerAction), number))
+                {
+                    PlayerAction action = (PlayerAction)number;
+                    this.PerformPlayerAction(action);
+                }
+                else
+                {
+                    this.AskForPlayerInput();
+                }
+            }
+            else
+            {
+                this.AskForPlayerInput();
+            }
+        }
+
+        public void PerformPlayerAction(PlayerAction action)
+        {
+            switch (action)
+            {
+                case PlayerAction.Attack:
+                    this.player.PerformAttack(this.PickTargetEnemy());
+                    this.EndTurn();
+                    break;
+                case PlayerAction.Spell:
+                    this.player.CastSpell(this.PickTargetEnemy());
+                    this.EndTurn();
+                    break;
+                case PlayerAction.Flee:
+                    Console.WriteLine("You run for your life!");
+                    this.EndCombat();
+                    break;
+            }
+        }
+
+        public Enemy PickTargetEnemy()
+        {
+            Console.WriteLine("Pick a target (0-" + (this.enemies.Count - 1) + "): ");
+            String input = Console.ReadLine();
+            int number;
+            if (int.TryParse(input, out number))
+            {
+                if (number >= 0 && number < this.enemies.Count)
+                {
+                    if (this.enemies[number].dead)
+                    {
+                        Console.WriteLine("That target is dead already, you crazy bastard!");
+                        return this.PickTargetEnemy();
+                    }
+                    else
+                    {
+                        return this.enemies[number];
+                    }
+                }
+                else
+                {
+                    return this.PickTargetEnemy();
+                }
+            }
+            else
+            {
+                return this.PickTargetEnemy();
+            }
+        }
+
+        public void EndTurn()
+        {
+            Console.WriteLine("Turn " + this.turnCounter + " ends.");
+            Console.WriteLine("--------------");
+            this.turnCounter++;
+            if (this.CheckVictoryCondition())
+            {
+                Console.WriteLine("You were victorious!");
+                this.EndCombat();
+            }
+            else
+            {
+                this.StartTurn();
+            }
+        }
+
+        public void EndCombat()
+        {
+            Console.WriteLine("Combat ends.");
+        }
+
+        public bool CheckVictoryCondition()
+        {
+            bool allEnemiesDead = true;
+            foreach (Enemy enemy in this.enemies)
+            {
+                if (enemy.dead == false)
+                {
+                    allEnemiesDead = false;
+                    break;
+                }
+            }
+            if (allEnemiesDead)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
     }
 }
