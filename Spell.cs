@@ -3,45 +3,40 @@ using System.Collections.Generic;
 
 namespace southfury_csharp_dojo
 {
-    enum SpellType
-    {
-        Fireball,
-        Frostball,
-        HealingTouch
-    }
-
     class Spell
     {
-        public SpellType type;
+        public string name;
         public bool selfTargeted;
         public int minDamage;
         public int maxDamage;
-        public int coolDown;
+        public int cooldown;
+        public bool isOnCooldown = false;
+        public int currentCooldown = 0;
+        public int manaCost;
 
-        public Spell(SpellType type, bool selfTargeted, int minDamage, int maxDamage, int coolDown)
+        public Spell(string name, bool selfTargeted, int minDamage, int maxDamage, int cooldown, int manaCost)
         {
-            this.type = type;
+            this.name = name;
             this.selfTargeted = selfTargeted;
             this.minDamage = minDamage;
             this.maxDamage = maxDamage;
-            this.coolDown = coolDown;
+            this.cooldown = cooldown;
+            this.manaCost = manaCost;
         }
 
-        public void Cast(Enemy target = null, Player player = null)
+        public void Cast(Player player, Enemy target = null)
         {
-            switch (this.type)
+            if (this.selfTargeted)
             {
-                case SpellType.Fireball:
-                    this.DoDamage(target);
-                    break;
-                case SpellType.Frostball:
-                    this.DoDamage(target);
-                    break;
-                case SpellType.HealingTouch:
-                    int healedHp = this.CalculateDamage();
-                    player.Heal(healedHp);
-                    break;
+                int healedHp = this.CalculateDamage();
+                player.Heal(healedHp);
             }
+            else
+            {
+                this.DoDamage(target);
+            }
+            this.StartCooldown();
+            player.DecreaseMana(this.manaCost);
         }
 
         public int CalculateDamage()
@@ -55,8 +50,26 @@ namespace southfury_csharp_dojo
         {
             int damage = CalculateDamage();
             target.hpCurrent = target.hpCurrent - damage;
-            Console.WriteLine(this.type.ToString() + " hits " + target.type.ToString() + " for " + damage + " damage.");
+            Console.WriteLine(this + " hits " + target.type.ToString() + " for " + damage + " damage.");
             target.UpdateState();
+        }
+
+        public void StartCooldown()
+        {
+            this.currentCooldown = this.cooldown;
+            this.isOnCooldown = true;
+        }
+
+        public void DecreaseCooldown()
+        {
+            if (this.currentCooldown > 0)
+            {
+                this.currentCooldown--;
+                if (this.currentCooldown == 0)
+                {
+                    this.isOnCooldown = false;
+                }
+            }
         }
     }
 }

@@ -14,7 +14,7 @@ namespace southfury_csharp_dojo
             this.player = player;
             player.currentCombat = this;
             Random random = new Random();
-            int numberOfEnemies = random.Next(2, 5);
+            int numberOfEnemies = random.Next(2, 4);
             for (int i = 0; i < numberOfEnemies; i++)
             {
                 Enemy enemy = new Enemy();
@@ -26,14 +26,22 @@ namespace southfury_csharp_dojo
 
         public void StartTurn()
         {
-            Console.WriteLine("Turn " + this.turnCounter + " starts.");
-            Console.WriteLine("Your HP is " + player.hpCurrent);
-            if (player.hpCurrent <= 0)
+            // Update Spell Cooldowns
+            foreach (Spell spell in player.spellBook)
             {
-                Console.WriteLine("WASTED!");
-                EndCombat();
-                return;
+                if (spell.isOnCooldown)
+                {
+                    spell.DecreaseCooldown();
+                }
             }
+
+            // Stat regeneration
+            player.RegenerateMana();
+
+            // Display status
+            Console.WriteLine("Turn " + this.turnCounter + " starts.");
+            Console.WriteLine("Your HP is " + player.hpCurrent + ".");
+            Console.WriteLine("Your Mana is " + player.manaCurrent + ".");
 
             foreach (Enemy enemy in this.enemies)
             {
@@ -98,8 +106,21 @@ namespace southfury_csharp_dojo
                     this.EnemyAttack(player);
                     break;
                 case PlayerAction.Spell:
-                    this.PlayerChoseSpell();
-                    this.EnemyAttack(player);
+                    if (this.player.AllSpellsOnCooldown())
+                    {
+                        Console.WriteLine("All your spells are currently on cooldown!\n");
+                        this.AskForPlayerInput();
+                    }
+                    else if (this.player.AllSpellsAreNotAffordable())
+                    {
+                        Console.WriteLine("You cannot afford to cast any of your spells!\n");
+                        this.AskForPlayerInput();
+                    }
+                    else
+                    {
+                        this.PlayerChoseSpell();
+                        this.EnemyAttack(player);
+                    }
                     break;
                 case PlayerAction.Flee:
                     Console.WriteLine("You run for your life!");
@@ -111,10 +132,7 @@ namespace southfury_csharp_dojo
         public void PlayerChoseSpell()
         {
             Console.WriteLine("Choose a spell (0-" + (this.player.spellBook.Count - 1) + "): ");
-            for (int i = 0; i < this.player.spellBook.Count; i++)
-            {
-                Console.WriteLine("(" + i + ") " + this.player.spellBook[i].type.ToString());
-            }
+            this.player.ShowSpellbook();
             string input = Console.ReadLine();
             int number;
             if (int.TryParse(input, out number))
@@ -122,7 +140,20 @@ namespace southfury_csharp_dojo
                 if (number >= 0 && number < this.player.spellBook.Count)
                 {
                     Spell spell = this.player.spellBook[number];
-                    this.player.CastSpell(spell);
+                    if (spell.isOnCooldown)
+                    {
+                        Console.WriteLine(spell.name + " is on cooldown.");
+                        this.PlayerChoseSpell();
+                    }
+                    else if (!player.CanAffordManaCost(spell))
+                    {
+                        Console.WriteLine("You don't have enough mana.");
+                        this.PlayerChoseSpell();
+                    }
+                    else
+                    {
+                        this.player.CastSpell(spell);
+                    }
                 }
                 else
                 {
@@ -157,15 +188,7 @@ namespace southfury_csharp_dojo
             {
                 if (number >= 0 && number < availableTargets.Count)
                 {
-                    if (this.enemies[number].dead)
-                    {
-                        Console.WriteLine("That target is dead already, you crazy bastard!");
-                        return this.PickTargetEnemy();
-                    }
-                    else
-                    {
-                        return this.enemies[number];
-                    }
+                    return availableTargets[number];
                 }
                 else
                 {
@@ -196,6 +219,13 @@ namespace southfury_csharp_dojo
 
         public void EndTurn()
         {
+            if (player.hpCurrent <= 0)
+            {
+                Console.WriteLine("WASTED!");
+                EndCombat();
+                return;
+            }
+
             Console.WriteLine("Turn " + this.turnCounter + " ends.");
             Console.WriteLine("--------------");
             this.turnCounter++;
